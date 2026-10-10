@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
+const path = require('path'); // Added path module for static file paths
 const { createClient } = require('@supabase/supabase-js');
 const Mailgun = require('mailgun.js');
 const formData = require('form-data');
@@ -9,6 +10,17 @@ const { OAuth2Client } = require('google-auth-library');
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// ==========================================
+// OPTION 1: SERVE STATIC FILES & INDEX.HTML
+// ==========================================
+// Serve all static frontend assets (index.html, styles, scripts) from the root folder
+app.use(express.static(path.join(__dirname)));
+
+// Route root requests explicitly to index.html
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 // Initialize Supabase Client
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
